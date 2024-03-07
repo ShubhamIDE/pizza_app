@@ -1,5 +1,10 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:rxdart/rxdart.dart';
+import 'package:user_repository/src/entities/entities.dart';
+import 'package:user_repository/src/models/user.dart';
 import 'package:user_repository/src/user_repo.dart';
 
 class FirebaseUserRepo implements UserRepository {
@@ -10,25 +15,54 @@ class FirebaseUserRepo implements UserRepository {
       : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance;
 
   @override
-  Stream<dynamic> get User => throw UnimplementedError();
-
-  @override
-  Future<void> logOut() {
-    throw UnimplementedError();
+  Future<void> logOut() async {
+    await _firebaseAuth.signOut();
   }
 
   @override
-  Future<void> setUserData(user) {
-    throw UnimplementedError();
+  Future<void> setUserData(MyUser user) async {
+    try {
+      await usersCollection.doc(user.userId).set(user.toEntity().toDocument());
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
   }
 
   @override
-  Future<void> signIn(String email, String password) {
-    throw UnimplementedError();
+  Future<void> signIn(String email, String password) async {
+    try {
+      await _firebaseAuth.signInWithEmailAndPassword(
+          email: email, password: password);
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
   }
 
   @override
-  Future<dynamic> signUp(myUser, String password) {
-    throw UnimplementedError();
+  Future<MyUser> signUp(MyUser myUser, String password) async {
+    try {
+      UserCredential user = await _firebaseAuth.createUserWithEmailAndPassword(
+          email: myUser.email, password: password);
+      myUser.userId = user.user!.uid;
+      return myUser;
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
+
+  @override
+  // TODO: implement User
+  Stream<MyUser?> get User {
+    return _firebaseAuth.authStateChanges().flatMap((firebaseUser) async* {
+      if (firebaseUser == null) {
+        yield MyUser.empty;
+      } else {
+        yield await usersCollection.doc(firebaseUser.uid).get().then((value) =>
+            MyUser.fromEntity(MyUserEntity.fromDocument(value.data()!)));
+      }
+    });
   }
 }
