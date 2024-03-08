@@ -4,7 +4,7 @@ class MyTextField extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
   final bool obscureText;
-  
+
   final TextInputType keyboardType;
   final Widget? suffixIcon;
   final VoidCallback? onTap;
@@ -15,7 +15,7 @@ class MyTextField extends StatelessWidget {
   final String? Function(String?)? onChanged;
 
   const MyTextField(
-      {super.key,
+      { super.key,
       required this.controller,
       required this.hintText,
       required this.obscureText,
@@ -26,7 +26,7 @@ class MyTextField extends StatelessWidget {
       this.validator,
       this.focusNode,
       this.errorMsg,
-      this.onChanged});
+      this.onChanged });
 
   @override
   Widget build(BuildContext context) {
