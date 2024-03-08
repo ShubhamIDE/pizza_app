@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pizza_app/app_view.dart';
 import 'package:pizza_app/blocs/authentication_block/authentication_bloc.dart';
 import 'package:user_repository/user_repository.dart';
 
@@ -10,11 +11,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RepositoryProvider<AuthenticationBloc>(
-
-
-
-
-      
       create: (context) => AuthenticationBloc(userRepository: userRepository),
       child: MyAppView(),
     );
