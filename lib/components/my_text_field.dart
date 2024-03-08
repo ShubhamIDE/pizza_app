@@ -4,6 +4,7 @@ class MyTextField extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
   final bool obscureText;
+  
   final TextInputType keyboardType;
   final Widget? suffixIcon;
   final VoidCallback? onTap;
